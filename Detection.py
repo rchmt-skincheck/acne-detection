@@ -34,6 +34,7 @@ def detector(data, model):
             class_detections_values.append(res[0].boxes.cls.tolist().count(k))
         # create dictionary of objects detected per class
         classes_detected = dict(zip(names.values(), class_detections_values))
+        print(classes_detected)
     except Exception as e:
         print(f"DEBUG: exception when trying to predict image. Error message: {e}")
         raise Exception("Error when trying to predict image")
