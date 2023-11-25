@@ -2,6 +2,8 @@ from ultralytics import YOLO
 import urllib
 import numpy as np
 import cv2
+import requests
+from google.cloud import storage
 
 def detector(data, model):
     try:
@@ -35,18 +37,36 @@ def detector(data, model):
         # count 'acne’ objects in the results
         count = results[0].boxes.cls.tolist().count(acne_id)
         print(count)
-        
-        # # save class label names
-        # names = res[0].names    # same as model.names
 
-        # # store number of objects detected per class label
-        # class_detections_values = []
-        # for k, v in names.items():
-        #     class_detections_values.append(res[0].boxes.cls.tolist().count(k))
-        # # create dictionary of objects detected per class
-        # classes_detected = dict(zip(names.values(), class_detections_values))
-        # print(classes_detected)
+
     except Exception as e:
         print(f"DEBUG: exception when trying to predict image. Error message: {e}")
         raise Exception("Error when trying to predict image")
+    
+    try:
+        post_response = post_request(
+            file_name=file_path,
+            image_result=f"1moutput/{file_path}",
+            acne_count=count,
+        )
+    except Exception as e:
+        print(f"DEBUG: exception when trying to post request. Error message: {e}")
+        raise Exception("Error when trying to post request")
 
+def post_request(file_name, image_result, acne_count):
+    data = {
+        "ImageName": file_name,
+        "Count": acne_count,
+    }
+
+    with open(image_result, "rb") as image_file:
+        files = {'ImageResult': (image_result, image_file, 'image/jpeg')}
+        response = requests.post(
+            "https://api-server-2p7ot3jdoq-et.a.run.app/internal/acne-detection",
+            files=files, data=data
+        )
+
+    if response.status_code == 200:
+        print("Permintaan berhasil!")
+    else:
+        print("Gagal. Kode status:", response.status_code)
