@@ -31,7 +31,7 @@ def detector(data, model):
         # get the model names list
         names = model.names
         # get the 'acne' class id
-        acne_id = list(names)[list(names.values()).index('acne')]
+        acne_id = list(names)[list(names.values()).index('fore')]
         # count 'acne’ objects in the results
         count = results[0].boxes.cls.tolist().count(acne_id)
         print(count)
