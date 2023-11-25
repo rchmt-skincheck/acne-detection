@@ -25,9 +25,10 @@ def detector(data, model):
     try:
         model = YOLO(model)
         model.predict(image, project="output", name=file_path, boxes=True, save=True, imgsz=600, conf=0.2, hide_labels=True)
-        result = model(image)
-        count = result.pandas().xyxy[0].value_counts('acne')
-        print(count)
+        results = model(image)
+        labels, cord = results.xyxyn[0][:, -1].to('cpu').numpy(), results.xyxyn[0][:, :-1].to('cpu').numpy()
+        n = len(labels)
+        print(n)
     except Exception as e:
         print(f"DEBUG: exception when trying to predict image. Error message: {e}")
         raise Exception("Error when trying to predict image")
