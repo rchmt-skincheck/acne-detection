@@ -25,16 +25,27 @@ def detector(data, model):
     try:
         model = YOLO(model)
         res = model.predict(image, project="output", name=file_path, boxes=True, save=True, imgsz=600, conf=0.2, hide_labels=True)
-        # save class label names
-        names = res[0].names    # same as model.names
+        
+        # run inference on the source image
+        results = model(image)
+        # get the model names list
+        names = model.names
+        # get the 'acne' class id
+        acne_id = list(names)[list(names.values()).index('acne')]
+        # count 'acne’ objects in the results
+        count = results[0].boxes.cls.tolist().count(acne_id)
+        print(count)
+        
+        # # save class label names
+        # names = res[0].names    # same as model.names
 
-        # store number of objects detected per class label
-        class_detections_values = []
-        for k, v in names.items():
-            class_detections_values.append(res[0].boxes.cls.tolist().count(k))
-        # create dictionary of objects detected per class
-        classes_detected = dict(zip(names.values(), class_detections_values))
-        print(classes_detected)
+        # # store number of objects detected per class label
+        # class_detections_values = []
+        # for k, v in names.items():
+        #     class_detections_values.append(res[0].boxes.cls.tolist().count(k))
+        # # create dictionary of objects detected per class
+        # classes_detected = dict(zip(names.values(), class_detections_values))
+        # print(classes_detected)
     except Exception as e:
         print(f"DEBUG: exception when trying to predict image. Error message: {e}")
         raise Exception("Error when trying to predict image")
