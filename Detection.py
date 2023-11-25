@@ -31,3 +31,4 @@ def detector(data, model):
     except Exception as e:
         print(f"DEBUG: exception when trying to predict image. Error message: {e}")
         raise Exception("Error when trying to predict image")
+
