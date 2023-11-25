@@ -3,7 +3,6 @@ import urllib
 import numpy as np
 import cv2
 import requests
-from google.cloud import storage
 
 def detector(data, model):
     try:
