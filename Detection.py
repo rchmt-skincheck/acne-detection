@@ -45,7 +45,7 @@ def detector(data, model):
     try:
         post_response = post_request(
             file_name=file_path,
-            image_result=f"output/{file_path}",
+            image_result=f"output/acne/{file_path}",
             acne_count=count,
         )
     except Exception as e:
