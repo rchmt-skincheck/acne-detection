@@ -30,3 +30,5 @@ images:
 substitutions:
   _VER: v.0.0.1
   _REPO: backend-app
+options:
+  machineType: 'E2_HIGHCPU_16'
