@@ -52,7 +52,7 @@ def detector(data, model):
         raise Exception("Error when trying to predict image")
 
     try:
-        post_response = post_request(
+        post_request(
             image_name=f"{bucket_name}/{file_path}",
             image_result=f"output/{file_path}/image0.jpg",
             acne_count=count,
@@ -69,7 +69,7 @@ def post_request(image_name, image_result, acne_count):
         }
         data = {
             "image_name": image_name,
-            "count": acne_count,
+            "count": int(acne_count),
         }
         response = requests.post(
             "https://skincheckai.id/api/internal/v1/acne-detection",
@@ -80,4 +80,9 @@ def post_request(image_name, image_result, acne_count):
     if response.status_code == 200:
         print("Permintaan berhasil!")
     else:
-        print("Gagal. Kode status: ", response.status_code, " , payload ")
+        print(
+            "Gagal. Kode status: ",
+            response.status_code,
+            " , payload: ",
+            response.json(),
+        )
