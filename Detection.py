@@ -53,7 +53,7 @@ def detector(data, model):
 
     try:
         post_response = post_request(
-            file_name=f"{bucket_name}/{file_path}",
+            image_name=f"{bucket_name}/{file_path}",
             image_result=f"output/{file_path}/image0.jpg",
             acne_count=count,
         )
@@ -62,16 +62,19 @@ def detector(data, model):
         raise Exception("Error when trying to post request")
 
 
-def post_request(file_name, image_result, acne_count):
+def post_request(image_name, image_result, acne_count):
     with open(image_result, "rb") as image_file:
         files = {
             "file": (image_result, image_file, "image/jpeg"),
-            "image_name": file_name,
+        }
+        data = {
+            "image_name": image_name,
             "count": acne_count,
         }
         response = requests.post(
             "https://skincheckai.id/api/internal/v1/acne-detection",
             files=files,
+            data=data,
         )
 
     if response.status_code == 200:
