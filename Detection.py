@@ -71,7 +71,7 @@ def post_request(file_name, image_result, acne_count):
         }
         response = requests.post(
             "https://skincheckai.id/api/internal/v1/acne-detection",
-            file=files,
+            files=files,
         )
 
     if response.status_code == 200:
