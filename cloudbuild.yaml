@@ -1,31 +1,32 @@
- steps:
- # Build the container image
- - name: 'gcr.io/cloud-builders/docker'
-   args: ['build', '-t', 'gcr.io/skincheckai-backend/acne-detection', '.']
- # Push the container image to Container Registry
- - name: 'gcr.io/cloud-builders/docker'
-   args: ['push', 'gcr.io/skincheckai-backend/acne-detection']
- # Deploy container image to Cloud Run
- - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-   entrypoint: gcloud
-   args:
-   - 'run'
-   - 'deploy'
-   - 'acne-detection'
-   - '--image'
-   - 'gcr.io/skincheckai-backend/acne-detection'
-   - '--port'
-   - '8080'
-   - '--service-account=acne-detection@skincheckai-backend.iam.gserviceaccount.com'
-   - '--memory'
-   - '2Gi'
-#    delete the line below if you want auth (using gcloud iap)
-   - '--allow-unauthenticated'
-   - '--region'
-   - 'asia-southeast1'
-   - '--set-env-vars'
-   - 'PROJECT_ID=skincheckai-backend'
-   - '--set-env-vars'
-   - 'BUCKET_URL=https://storage.googleapis.com/ml-image-uploaded'
- images:
- - 'gcr.io/skincheckai-backend/acne-detection'
+steps:
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cp', 'gs://skincheckai-ml-models/best.pt', 'best.pt']
+- name: 'gcr.io/cloud-builders/docker'
+  args: 
+  - 'build'
+  - '--tag=asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:$COMMIT_SHA'
+  - '--tag=asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:latest'
+  - '--cache-from=asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:latest'
+  - '.'
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:$COMMIT_SHA']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'acne-detection'
+  - '--image=asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:$COMMIT_SHA'
+  - '--port=8080'
+  - '--service-account=acne-detection@skincheckai-backend.iam.gserviceaccount.com'
+  - '--memory=2Gi'
+  - '--allow-unauthenticated'
+  - '--region=asia-southeast2'
+  - '--set-env-vars=PROJECT_ID=$PROJECT_ID'
+  - '--set-env-vars=BUCKET_URL=https://storage.googleapis.com/ml-image-uploaded'
+images:
+- 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:$COMMIT_SHA'
+- 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:latest'
+substitutions:
+  _VER: v.0.0.1
+  _REPO: backend-app
