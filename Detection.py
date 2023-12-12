@@ -65,20 +65,16 @@ def detector(data, model):
 def post_request(image_name, image_result, acne_count):
     with open(image_result, "rb") as image_file:
         files = {
-            "file": (image_result, image_file, "image/jpeg"),
+            "file": (image_result, image_file),
         }
         data = {
             "image_name": image_name,
             "count": int(acne_count),
         }
-        headers = {
-            "Content-Type": "multipart/form-data",
-        }
         response = requests.post(
             "https://skincheckai.id/api/internal/v1/acne-detection",
             files=files,
             data=data,
-            headers=headers,
         )
 
     if response.status_code == 200:
