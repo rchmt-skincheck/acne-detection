@@ -76,6 +76,7 @@ def post_request(image_name, image_result, acne_count):
             files=files,
             data=data,
         )
+        print(f"DEBUG: {image_name}")
 
     if response.status_code == 200:
         print("Permintaan berhasil!")
