@@ -53,7 +53,7 @@ def detector(data, model):
 
     try:
         post_request(
-            image_name=f"{bucket_name}/{file_path}",
+            image_name=f"/{bucket_name}/{file_path}",
             image_result=f"output/{file_path}/image0.jpg",
             acne_count=count,
         )
