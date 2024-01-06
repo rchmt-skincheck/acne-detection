@@ -90,6 +90,8 @@ def post_request(image_name, image_result, comedone_count, pustule_count, nodule
                 "papule": int(papule_count)
             },
         }
+
+        print(f"DEBUG Parameter yang dikirimkan: file: {files}, data: {data}")
         response = requests.post(
             "https://skincheckai.id/api/internal/v1/acne-detection",
             files=files,
