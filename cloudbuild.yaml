@@ -18,7 +18,7 @@ steps:
   - 'acne-detection-model-update'
   - '--image=asia-southeast2-docker.pkg.dev/$PROJECT_ID/${_REPO}/acne-detection-server:$COMMIT_SHA'
   - '--port=8080'
-  - '--service-account=acne-detection@skincheckai-backend.iam.gserviceaccount.com'
+  - '--service-account=acne-detection-new-model@skincheckai-backend.iam.gserviceaccount.com'
   - '--memory=2Gi'
   - '--allow-unauthenticated'
   - '--region=asia-southeast2'
